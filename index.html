@@ -75,7 +75,12 @@
         <p>
           詳細は省略しますが<a id="ref8" href="#ref8" class="ref">[8]</a
           >、Intersection
-          Observerを用いて次のように、現在表示されている脚注番号に対応する脚注は`data-visible`属性をつけるようにします。
+          Observerを用いて次のように、現在表示されている脚注番号に対応する脚注は`data-visible`属性をつけるようにします<a
+            id="ref9"
+            href="#ref9"
+            class="ref"
+            >[9]</a
+          >。
         </p>
         <pre><code class="language-js">&lt;footer&gt;
   &lt;p class="footnote" id="footnote1" data-visible&gt;脚注1&lt;/p&gt;
@@ -88,10 +93,10 @@
 }</code></pre>
         <p>
           また、画面が小さい端末においては脚注が画面を占拠しすぎないように、次のようなCSSで同時に表示される脚注を3個までに制限します<a
-            id="ref9"
-            href="#ref9"
+            id="ref10"
+            href="#ref10"
             class="ref"
-            >[9]</a
+            >[10]</a
           >。
         </p>
         <pre><code class="language-css">@media (width <= 640px) {
@@ -112,10 +117,10 @@
             target="_blank"
             >View Transitions API</a
           >を使ってみます。そのためGoogle Chromeでしか動作しませんが<a
-            id="ref10"
-            href="#ref10"
+            id="ref11"
+            href="#ref11"
             class="ref"
-            >[10]</a
+            >[11]</a
           >、趣味でやっていることなのでご容赦ください。
         </p>
         <p>
@@ -187,10 +192,14 @@
         </p>
         <p class="footnote" id="footnote9">
           <a href="#ref9">[9]</a>
+          正確にはビューポートに入ることを判定しているため、まだ画面下部の脚注エリアの裏に隠れている状態であっても、画面内に入ったと評価されます。より正確な判定をする場合は、無限ループの対処を考慮する必要があります。
+        </p>
+        <p class="footnote" id="footnote9">
+          <a href="#ref10">[10]</a>
           この辺りの処理はJavaScriptで行うかCSSで行うかは好みで決めるとよいでしょう。
         </p>
         <p class="footnote" id="footnote10">
-          <a href="#ref10">[10]</a>
+          <a href="#ref11">[11]</a>
           他のブラウザの状況としては、<a
             href="https://github.com/mozilla/standards-positions/issues/677"
             target="_blank"
