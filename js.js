@@ -51,7 +51,13 @@ const intersectingSet = new Set();
       if (entry.isIntersecting) {
         footer.classList.add("static");
       } else {
-        footer.classList.remove("static");
+        // check if marker is hidden upwards
+        const rect = footerMarker.getBoundingClientRect();
+        if (rect.top < 0) {
+          footer.classList.add("static");
+        } else {
+          footer.classList.remove("static");
+        }
       }
     }
   });
