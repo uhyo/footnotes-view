@@ -1,0 +1,87 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #f0f0f0;
+}
+
+h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 2em 0 1em 0;
+}
+
+pre {
+  margin: 0;
+  padding: 0.5em;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 0.5em;
+  overflow-x: auto;
+}
+
+a.ref {
+  font-size: 0.85em;
+  vertical-align: super;
+  text-decoration: none;
+}
+
+body > div {
+  margin: 0 auto;
+  padding: 0.5em 2em;
+  width: min(100vw, 800px);
+  background-color: white;
+}
+
+
+footer {
+  background-color: white;
+  padding: 0.25em;
+  font-size: 0.85em;
+  view-transition-name: footer;
+  contain: paint;
+}
+
+footer:not(.static) {
+  position: sticky;
+  bottom: 0;
+}
+
+footer > h3 {
+  display: none;
+  border-top: 1px solid #333333;
+  padding-top: 2px;
+  color: #333333;
+}
+
+:is(footer.static, footer[data-visible]) > h3 {
+  display: block;
+}
+
+footer:not(.static) p.footnote:not([data-visible]) {
+  display: none;
+}
+
+@media (width <= 640px) {
+  footer:not(.static) p.footnote[data-visible] ~ p.footnote[data-visible] ~ p.footnote[data-visible] ~ p.footnote {
+    display: none;
+  }
+}
+
+::view-transition-group(root) {
+  animation-duration: 0s;
+}
+
+.mysterious-space {
+  background-color: #f0f0f0;
+  aspect-ratio: 1;
+  margin: 1.5em auto;
+  width: min(50vw, 100%);
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  justify-items: center;
+  align-items: center;
+}

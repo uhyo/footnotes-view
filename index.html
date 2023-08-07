@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ついてくる脚注</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css.css" />
+    <script type="module" src="js.js" defer></script>
+  </head>
+  <body>
+    <div>
+      <main>
+        <h1>ついてくる脚注</h1>
+        <p>
+          皆さんこんにちは。文章には、脚注が含まれることが多くあります<a
+            id="ref1"
+            href="#ref1"
+            class="ref"
+            >[1]</a
+          >。このようにWebページの形で提供される記事においては、脚注は本文の下に記載されるのが一般的です<a
+            id="ref2"
+            href="#ref2"
+            class="ref"
+            >[2]</a
+          >。
+        </p>
+        <p>
+          このように表示される脚注を読むためには、本文と脚注を行き来する必要があります。しかし、脚注は本文の内容を補足するものであるため、本文と脚注とを同時に目に入れて読めるのが理想です。多くのウェブサイトでは、本文中に表示される脚注番号はリンクになっており、クリックすると脚注が表示されます。そして、脚注を読んだら脚注の番号をクリックすると、本文に戻ります。これは結構面倒な操作です<a
+            id="ref3"
+            href="#ref3"
+            class="ref"
+            >[3]</a
+          ><a id="ref4" href="#ref4" class="ref">[4]</a>。
+        </p>
+        <p>
+          筆者はもともと脚注を多用する文章を書くほうだったのですが、脚注は読むのが面倒だという考えが強くなり、最近はあまり脚注を使わなくなりました<a
+            id="ref5"
+            href="#ref5"
+            class="ref"
+            >[5]</a
+          >。
+        </p>
+        <p>
+          しかし、よくよく考えれば、脚注の表示方法を工夫して脚注を読む体験を良くするほうが筋がよいのではないかと思いました。そこで、この記事では、脚注を本文と一緒に表示する方法を実践してみました。
+        </p>
+
+        <h2>この記事での脚注の表示方法</h2>
+        <p>
+          この記事では、脚注が常に画面の下に表示されています。こうすることで、本文中に脚注が現れたときは、視線を移動させるだけで脚注を読むことができます。これは紙の本における脚注の表示方法に近く<a
+            id="ref6"
+            href="#ref6"
+            class="ref"
+            >[6]</a
+          >、脚注を読む体験を良くすることができます。
+        </p>
+        <p>
+          ただ、全ての脚注が画面の下に表示されていると邪魔です。そこで、この記事では現在画面に表示されている番号（本文中の
+          [1]
+          のような表示）に対応するものだけを画面の下に表示しています。スクロールするだけで画面の下がちらちらと動くのが不愉快に感じられる恐れもありますが、本文を読んでいて脚注が出てきて下を見たら対応する脚注が読めるというのは、悪くない体験なのではないかと思います。
+        </p>
+
+        <h2>実装方法</h2>
+        <p>
+          実はこの記事は技術記事なので<a id="ref7" href="#ref7" class="ref"
+            >[7]</a
+          >、ここからはこのような挙動の実装方法について説明します。
+        </p>
+        <p>
+          まず、本文中にある脚注番号が、画面内にあるかどうかを判定する必要があります。これに使えるのが
+          <a
+            href="https://developer.mozilla.org/ja/docs/Web/API/Intersection_Observer_API"
+            >Intersection Observer API</a
+          >です。このAPIを用いて脚注番号の要素を全て監視することで、今どの脚注が画面内にあるかを判定することができます。
+        </p>
+        <p>
+          詳細は省略しますが<a id="ref8" href="#ref8" class="ref">[8]</a
+          >、Intersection
+          Observerを用いて次のように、現在表示されている脚注番号に対応する脚注は`data-visible`属性をつけるようにします。
+        </p>
+        <pre><code class="language-js">&lt;footer&gt;
+  &lt;p class="footnote" id="footnote1" data-visible&gt;脚注1&lt;/p&gt;
+  &lt;p class="footnote" id="footnote2"&gt;脚注2&lt;/p&gt;
+  &lt;p class="footnote" id="footnote3"&gt;脚注3&lt;/p&gt;
+  ……</code></pre>
+        <p>実際の表示・非表示の制御はCSSで行うことができます。</p>
+        <pre><code class="language-css">footer p.footnote:not([data-visible]) {
+  display: none;
+}</code></pre>
+        <p>
+          また、画面が小さい端末においては脚注が画面を占拠しすぎないように、次のようなCSSで同時に表示される脚注を3個までに制限します<a
+            id="ref9"
+            href="#ref9"
+            class="ref"
+            >[9]</a
+          >。
+        </p>
+        <pre><code class="language-css">@media (width <= 640px) {
+  footer p.footnote[data-visible] ~ p.footnote[data-visible] ~ p.footnote[data-visible] ~ p.footnote {
+    display: none;
+  }
+}</code></pre>
+
+        <h2>インタラクションの追加</h2>
+        <p>
+          以上で基本的な機能は実装できました。ただ、単なる<code
+            >display: none</code
+          >のつけ外しだと動作が自然ではありません。ここはひとつ、マイクロインタラクションというのをやってみましょう。
+        </p>
+        <p>
+          ただし、今回は<a
+            href="https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API"
+            target="_blank"
+            >View Transitions API</a
+          >を使ってみます。そのためGoogle Chromeでしか動作しませんが<a
+            id="ref10"
+            href="#ref10"
+            class="ref"
+            >[10]</a
+          >、趣味でやっていることなのでご容赦ください。
+        </p>
+        <p>
+          このAPIを使ってインタラクションを加える場合は、DOM操作を<code>document.startViewTransition</code>で囲むだけでOKです。
+        </p>
+        <pre><code class="language-js">if (document.startViewTransition) {
+  document.startViewTransition(updateFootnotes);
+} else {
+  updateFootnotes();
+}</code></pre>
+      </main>
+      <p>
+        そして、いくらかView Transitions
+        APIに関連したCSSを書けば完成です。このページをGoogle
+        Chromeで開くと動作を確認することができます。
+      </p>
+
+      <h2>まとめ</h2>
+      <p>
+        この記事では、常に画面の下についてきてその時必要な脚注だけを表示するような脚注の実装方法について説明しました。既存の実装があるかどうかは調査していませんが、なかなか面白いのではないかと思います。ぜひ感想を寄せてください。
+      </p>
+      <p>文責: uhyo</p>
+
+      <div class="mysterious-space">謎の余白</div>
+
+      <div id="footer-top-marker"></div>
+      <footer>
+        <h3>脚注</h3>
+        <p class="footnote" id="footnote1">
+          <a href="#ref1">[1]</a>
+          脚注とは、このように本文とは別に記載される注釈のことです。
+        </p>
+        <p class="footnote" id="footnote2">
+          <a href="#ref2">[2]</a>
+          筆者の調べでは、<a href="https://qiita.com/" target="_blank">Qiita</a
+          >も<a href="https://zenn.dev/" target="_blank">Zenn</a
+          >もこのような形式で脚注を表示しています。
+        </p>
+        <p class="footnote" id="footnote3">
+          <a href="#ref3">[3]</a>
+          本文を読むのはページをスクロールするだけで良いところ、脚注があるとクリック（タップ）といった面倒な操作が必要になります。スマートフォンであれば、タップ可能な領域が小さくて面倒といったことも起こりがちです。
+        </p>
+        <p class="footnote" id="footnote4">
+          <a href="#ref4">[4]</a>
+          ちなみに、<a href="https://ja.wikipedia.org/" target="_blank"
+            >Wikipedia</a
+          >においては、PC向けの表示ではここで説明したような挙動となりますが、スマートフォン向けの表示では、脚注をタップするとオーバーレイで脚注が表示され、スクロールしないようになっています。
+        </p>
+        <p class="footnote" id="footnote5">
+          <a href="#ref5">[5]</a>
+          脚注の代わりの方法としては、括弧の中に注釈を書く方法を使っています。しかし、括弧も本文を読みにくくする問題があるため、文章構成から見直すなど追加の工夫が必要です。
+        </p>
+        <p class="footnote" id="footnote6">
+          <a href="#ref6">[6]</a>
+          聞いたところによると、そのページの下部ではなく章の末尾に脚注をまとめる形式もあるようです。
+        </p>
+        <p class="footnote" id="footnote7">
+          <a href="#ref7">[7]</a>
+          GitHub
+          Pagesにサッとデプロイするために、温かみのある手書きHTMLで書かれています。
+        </p>
+        <p class="footnote" id="footnote8">
+          <a href="#ref8">[8]</a>
+          JavaScriptのソースコードも温かみのある手書きなので、このページのソースコードまたは<a
+            href="https://github.com/uhyo/footnotes-view"
+            target="_blank"
+            >GitHub</a
+          >を参照すれば読むことができます。
+        </p>
+        <p class="footnote" id="footnote9">
+          <a href="#ref9">[9]</a>
+          この辺りの処理はJavaScriptで行うかCSSで行うかは好みで決めるとよいでしょう。
+        </p>
+        <p class="footnote" id="footnote10">
+          <a href="#ref10">[10]</a>
+          他のブラウザの状況としては、<a
+            href="https://github.com/mozilla/standards-positions/issues/677"
+            target="_blank"
+            >FirefoxはこのAPIに対してpositive</a
+          >であり、<a
+            href="https://github.com/WebKit/standards-positions/issues/48"
+            target="_blank"
+            >WebKitは不明</a
+          >です。
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
